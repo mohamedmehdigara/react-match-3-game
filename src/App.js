@@ -3,11 +3,26 @@ import './App.css';
 
 const colors = ['red', 'blue', 'green', 'yellow', 'orange']; // Available tile colors
 
+const levels = [
+  {
+    objective: 'Collect 10 red tiles',
+    targetColor: 'red',
+    targetCount: 10
+  },
+  {
+    objective: 'Collect 15 blue tiles',
+    targetColor: 'blue',
+    targetCount: 15
+  },
+  // Add more levels here with different objectives
+];
+
 function App() {
   const [board, setBoard] = useState([]); // The game board state
   const [selectedTile, setSelectedTile] = useState(null); // Currently selected tile
+  const [currentLevel, setCurrentLevel] = useState(0); // Current level
 
-  // Function to initialize the game board
+  // Function to initialize the game board based on the current level
   const initializeBoard = () => {
     const newBoard = [];
     for (let row = 0; row < 8; row++) {
@@ -96,8 +111,32 @@ function App() {
       setBoard(newBoard);
       checkForMatches(newBoard); // Recursively check for additional matches
     } else {
-      // No more matches found, game over or other logic can be implemented here
+      const level = levels[currentLevel];
+      const targetCount = countTiles(newBoard, level.targetColor);
+      if (targetCount >= level.targetCount) {
+        if (currentLevel === levels.length - 1) {
+          // All levels completed, game over or other logic can be implemented here
+          console.log('Game Over!');
+        } else {
+          // Move to the next level
+          setCurrentLevel(currentLevel + 1);
+          initializeBoard();
+        }
+      }
     }
+  };
+
+  // Function to count the number of tiles of a specific color on the board
+  const countTiles = (currentBoard, color) => {
+    let count = 0;
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        if (currentBoard[row][col] === color) {
+          count++;
+        }
+      }
+    }
+    return count;
   };
 
   // Function to generate a random color
@@ -107,11 +146,13 @@ function App() {
 
   useEffect(() => {
     initializeBoard();
-  }, []);
+  }, [currentLevel]);
 
   return (
     <div className="App">
       <h1>Match-3 Game</h1>
+      <h2>Level {currentLevel + 1}</h2>
+      <h3>{levels[currentLevel].objective}</h3>
       <div className="board">
         {board.map((row, rowIndex) =>
           row.map((color, colIndex) => (
