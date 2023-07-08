@@ -1,22 +1,21 @@
-.App {
-  text-align: center;
+.obstacle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  pointer-events: none;
 }
 
-.board {
-  display: grid;
-  grid-template-columns: repeat(8, 50px);
-  grid-template-rows: repeat(8, 50px);
-  gap: 2px;
-  margin-top: 20px;
+.jelly {
+  background-image: url('jelly.png');
 }
 
-.tile {
-  cursor: pointer;
+.chocolate {
+  background-image: url('chocolate.png');
 }
 
-.selected {
-  outline: 2px solid white;
+.licorice {
+  background-image: url('licorice.png');
 }
 
 /* Add additional styles here as needed */
-

@@ -7,14 +7,24 @@ const levels = [
   {
     objective: 'Collect 10 red tiles',
     targetColor: 'red',
-    targetCount: 10
+    targetCount: 10,
+    obstacles: [
+      { row: 2, col: 2, type: 'jelly' },
+      { row: 4, col: 4, type: 'chocolate' },
+      // Add more obstacles for each level as needed
+    ]
   },
   {
     objective: 'Collect 15 blue tiles',
     targetColor: 'blue',
-    targetCount: 15
+    targetCount: 15,
+    obstacles: [
+      { row: 3, col: 3, type: 'licorice' },
+      { row: 5, col: 5, type: 'jelly' },
+      // Add more obstacles for each level as needed
+    ]
   },
-  // Add more levels here with different objectives
+  // Add more levels here with different objectives and obstacles
 ];
 
 function App() {
@@ -144,6 +154,13 @@ function App() {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  // Function to remove an obstacle from the board
+  const removeObstacle = (row, col) => {
+    const newBoard = [...board];
+    newBoard[row][col] = getRandomColor();
+    setBoard(newBoard);
+  };
+
   useEffect(() => {
     initializeBoard();
   }, [currentLevel]);
@@ -155,14 +172,23 @@ function App() {
       <h3>{levels[currentLevel].objective}</h3>
       <div className="board">
         {board.map((row, rowIndex) =>
-          row.map((color, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={`tile ${selectedTile && selectedTile.row === rowIndex && selectedTile.col === colIndex ? 'selected' : ''}`}
-              style={{ backgroundColor: color }}
-              onClick={() => handleTileClick(rowIndex, colIndex)}
-            ></div>
-          ))
+          row.map((color, colIndex) => {
+            const obstacle = levels[currentLevel].obstacles.find(
+              (obs) => obs.row === rowIndex && obs.col === colIndex
+            );
+            return (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={`tile ${selectedTile && selectedTile.row === rowIndex && selectedTile.col === colIndex ? 'selected' : ''}`}
+                style={{ backgroundColor: color }}
+                onClick={() => handleTileClick(rowIndex, colIndex)}
+              >
+                {obstacle && (
+                  <div className={`obstacle ${obstacle.type}`} onClick={() => removeObstacle(rowIndex, colIndex)}></div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
     </div>
